@@ -1,0 +1,14 @@
+#ifndef PCH
+#define PCH
+#ifndef YY_DECL
+#define YY_DECL yy::parser::symbol_type yylex(void* yyscanner)
+#endif /* !YY_DECL */
+#ifdef SCANNER_HEADER
+#include"${${PROJ}_SCANNER_HEADER}"
+#endif
+
+#ifdef PARSER_HEADER
+#include"${${PROJ}_PARSER_HEADER}"
+#endif
+
+#endif
