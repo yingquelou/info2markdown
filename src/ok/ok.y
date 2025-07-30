@@ -44,11 +44,18 @@ extern YY_DECL;
 }
 
 %token <long double> number
+%token <std::string> str
 
 %%
-start:
-|number start{
-std::cout<<"number:\t"<<$1<<'\n';
+start:{
+
+}
+| start number{
+//std::cout<<"number:\t"<<$number<<'\n';
+}
+|start str {
+   // auto f=@str;
+std::cout<<$str<<'\n';
 }
 ;
 

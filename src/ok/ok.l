@@ -25,7 +25,10 @@ T As(const std::string &s)
 digit [[:digit:]]
 space [[:space:]]
 cntrl [[:cntrl:]]
+alpha [[:alpha:]]
+alnum [[:alnum:]]
 number [+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
+entry {alnum}+:[^,\n]+
 
 %%
 
@@ -33,8 +36,13 @@ number [+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 	// rules节第一个Action之前的所有%{...}%块,将按出现顺序逐字追加到扫描器函数体初始化区域的末尾
 %}
 
-{number} {
- return {yy::parser::token_type::number,As<long double>({yytext,yytext+yyleng})};
+^{entry}(,{space}*{entry})* {
+ return {yy::parser::token_type::str,std::string(yytext,yytext+yyleng)};
 }
+
+.|{cntrl} {
+
+}
+
 
 %%
