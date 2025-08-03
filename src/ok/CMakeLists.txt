@@ -19,8 +19,8 @@ add_flex_bison_dependency(${PROJ}_SCANNER ${PROJ}_PARSER)
 cmake_path(GET FLEX_${PROJ}_SCANNER_OUTPUT_HEADER FILENAME ${PROJ}_SCANNER_HEADER)
 cmake_path(GET BISON_${PROJ}_PARSER_OUTPUT_HEADER FILENAME ${PROJ}_PARSER_HEADER)
 configure_file(pch.h.in pch.h)
-include_directories(${FLEX_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
-add_executable(${PROJ} yacc.cpp
+include_directories(${FLEX_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable(${PROJ} yacc.cpp utils.cpp
 ${FLEX_${PROJ}_SCANNER_OUTPUTS}
 ${BISON_${PROJ}_PARSER_OUTPUTS}
 )

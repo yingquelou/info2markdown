@@ -1,13 +1,12 @@
 ﻿cmake_minimum_required(VERSION 3.10)
 find_package(Git REQUIRED)
-if(NOT EXISTS ${CMAKE_BINARY_DIR}/cmake_module)
-execute_process(COMMAND ${GIT_EXECUTABLE} clone https://gitee.com/yingquelou/cmakeModule.git ${CMAKE_BINARY_DIR}/cmake_module
+set(APPEND_CMAKE_MODULE ${CMAKE_BINARY_DIR}/../cmake_module)
+if(NOT EXISTS ${APPEND_CMAKE_MODULE})
+execute_process(COMMAND ${GIT_EXECUTABLE} clone https://gitee.com/yingquelou/cmakeModule.git ${APPEND_CMAKE_MODULE}
 COMMAND_ECHO STDOUT)
 endif()
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}/cmake_module ${CMAKE_MODULE_PATH})
+list(APPEND CMAKE_MODULE_PATH ${APPEND_CMAKE_MODULE} ${CMAKE_MODULE_PATH})
 cmake_path(GET CMAKE_CURRENT_LIST_DIR FILENAME PROJ)
-
-
 project(${PROJ})
 include(router)
 if(MINGW)

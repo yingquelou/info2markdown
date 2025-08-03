@@ -1,12 +1,15 @@
 /*
 利用词法分析器对info <topic> --subnodes -o <file>命令生成的文档进行转换,转换为其他格式(例如：markdown,html,rst等)
 */
-%option nounistd noyywrap stack reentrant
+%option nounistd stack reentrant noyywrap noline
 %top {
 /*
 	definitions节的所有top块将按出现顺序逐字追加到扫描器实现文件的顶部
 	需要头文件的话,也会输出到扫描器头文件顶部
 */
+#ifndef YY_DECL
+#define YY_DECL yy::parser::symbol_type yylex(void* yyscanner)
+#endif /* !YY_DECL */
 }
 %{
 /*
@@ -15,6 +18,7 @@
 */
 #define PARSER_HEADER
 #include"pch.h"
+#include"utils.h"
 #include <sstream>
 template <typename T>
 T As(const std::string &s)
@@ -60,7 +64,7 @@ alpha [[:alpha:]]
 alnum [[:alnum:]]
 number [+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 entry {alnum}+:[^,\n]+
-
+eol <<EOF>>|\r?\n
 
 %%
 
@@ -70,8 +74,22 @@ entry {alnum}+:[^,\n]+
 
 ^{entry}(,{space}*{entry})* {
 std::string line(yytext,yytext+yyleng);
-std::map<std::string, std::string> parsed = parseLine(line);
-fprintf(yyout, "# %s\n", parsed["Node"].c_str());
+auto node=utils::parseLine(line);
+std::unordered_map<std::string, int> &nodes=*(std::unordered_map<std::string, int>*)yyget_extra(yyscanner);
+auto n=node["Node"];
+if(nodes.find(n)!=nodes.cend()){
+	std::string tag(nodes[n],'#');
+	tag+=' ';
+	tag+=n;
+	fwrite(tag.c_str(),1,tag.size(),yyout);
+}
+}
+
+^[-=\*]+$ {
+
+//for(int i=0;i<yyleng;++i)
+//	fprintf(yyout, "%c", '=');
+//fprintf(yyout, "\n");
 }
 
 \*{space}*[^:\*\n]*:: {
